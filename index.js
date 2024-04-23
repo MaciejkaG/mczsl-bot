@@ -26,7 +26,7 @@ client.commands = new Collection();
         const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
         for (const file of commandFiles) {
             const filePath = path.join(commandsPath, file);
-            const command = await import(filePath);
+            const command = await import('file://' + filePath);
             if ('data' in command && 'execute' in command) {
                 commands.push(command.data.toJSON());
                 client.commands.set(command.data.name, command);
@@ -53,7 +53,7 @@ client.commands = new Collection();
 
     for (const file of eventFiles) {
         const filePath = path.join(eventsPath, file);
-        const event = (await import(filePath)).default;
+        const event = (await import('file://' + filePath)).default;
         if (event.once) {
             client.once(event.name, (...args) => event.execute(...args));
         } else {
@@ -77,7 +77,7 @@ client.on(Events.InteractionCreate, async interaction => {
     } catch (error) {
         console.error(error);
         if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+            await interaction.followUp({ content: 'Wystąpił błąd w trakcie wykonywania tej komendy!', ephemeral: true });
         } else {
             await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
         }

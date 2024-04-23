@@ -1,0 +1,30 @@
+[
+    {
+        "label": "Zgłoszenie gracza",
+        "description": "Zgłoszenie gracza na serwerze Minecraft.",
+        "value": "minecraftreport",
+        "openingMessage": "Pamiętaj aby w zgłoszeniu podać powód, nick lub ID/nick na Discordzie gracza oraz, jeśli to możliwe, dowody.",
+        "emoji": "❗"
+    },
+    {
+        "label": "Błąd Minecraft",
+        "description": "Zgłoszenie błędu serwera Minecraft.",
+        "value": "minecraftbug",
+        "openingMessage": "Prosimy o podanie jak największej ilości informacji na temat błędu.",
+        "emoji": "🎮"
+    },
+    {
+        "label": "Błąd WWW",
+        "description": "Zgłoszenie błędu jednej z naszych stron internetowych.",
+        "value": "wwwbug",
+        "openingMessage": "Prosimy o podanie jak największej ilości informacji na temat błędu.",
+        "emoji": "🌐"
+    },
+    {
+        "label": "Błąd serwera Discord",
+        "description": "Zgłoszenie błędu serwera Discord.",
+        "value": "discordbug",
+        "openingMessage": "Prosimy o podanie jak największej ilości informacji na temat błędu.",
+        "emoji": "💬"
+    }
+]
