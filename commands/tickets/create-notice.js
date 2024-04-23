@@ -63,10 +63,10 @@ const execute = async (interaction) => {
                     const row = new ActionRowBuilder()
                         .addComponents(createTicket);
 
-                    channel.send({ components: [row], embeds: [embed] });
-                    interaction.reply({ content: `Utworzono nową wiadomość z informacją o ticketach na kanale <#${channel.id}>`, ephemeral: true });
+                    await channel.send({ components: [row], embeds: [embed] });
+                    await interaction.reply({ content: `Utworzono nową wiadomość z informacją o ticketach na kanale <#${channel.id}>`, ephemeral: true });
                 } else {
-                    interaction.reply({ content: "Nie udało się wykonać tej komendy! W konsoli bota zostało wyświetlone więcej informacji.", ephemeral: true });
+                    await interaction.reply({ content: "Nie udało się wykonać tej komendy! W konsoli bota zostało wyświetlone więcej informacji.", ephemeral: true });
 
                     console.log(`${'[BOT]'.blue} Ticket notice channel not found! The ticket notice was not sent.`)
                 }
