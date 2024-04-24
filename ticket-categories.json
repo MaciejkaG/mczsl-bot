@@ -26,5 +26,12 @@
         "value": "discordbug",
         "openingMessage": "Prosimy o podanie jak największej ilości informacji na temat błędu.",
         "emoji": "💬"
+    },
+    {
+        "label": "Pomoc",
+        "description": "Jakiekolwiek problemy/prośby o pomoc.",
+        "value": "helprequest",
+        "openingMessage": "Prosimy wytłumaczyć w czym dokładnie tkwi problem.",
+        "emoji": "❔"
     }
 ]
