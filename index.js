@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import path from 'node:path';
 import { REST, Routes, Client, Collection, Events, GatewayIntentBits } from 'discord.js';
+import { createClient } from 'redis';
 import colors from 'colors';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,6 +19,11 @@ const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'
 const token = process.env.bot_token;
 const clientId = process.env.bot_client_id;
 
+const redis = createClient();
+redis.on('error', err => console.log('Redis Client Error', err));
+await redis.connect();
+
+client.redis = redis;
 client.commands = new Collection();
 
 (async () => {
