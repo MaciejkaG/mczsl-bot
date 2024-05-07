@@ -10,7 +10,7 @@ export default {
                 .setName('ilosc_wiadomosci')
                 .setDescription('Ilość wiadomości do usunięcia.')
                 .setMinValue(1)
-                .setMaxValue(500)
+                .setMaxValue(100)
                 .setRequired(true)
         ),
     async execute(interaction) {
