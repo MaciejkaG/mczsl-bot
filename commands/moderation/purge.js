@@ -10,7 +10,7 @@ export default {
                 .setName('ilosc_wiadomosci')
                 .setDescription('Ilość wiadomości do usunięcia.')
                 .setMinValue(1)
-                .setMaxValue(100)
+                .setMaxValue(99)
                 .setRequired(true)
         ),
     async execute(interaction) {
@@ -23,7 +23,14 @@ export default {
 
         const messagesToDelete = allMessages.filter(message => message.id != reply.id);
 
-        await interaction.channel.bulkDelete(messagesToDelete);
+        try {
+            await interaction.channel.bulkDelete(messagesToDelete);
+        } catch (e) {
+            if (e.rawError.code === 50034) {
+                await interaction.followUp({ content: `Komendy \`\`purge\`\` można używać tylko na wiadomościach nie starszych niż 14 dni!`, ephemeral: true });
+                return;
+            }
+        }
 
         await interaction.followUp(`Usunięto ${messagesToDelete.size} wiadomości z kanału <#${interaction.channel.id}>`);
     }
