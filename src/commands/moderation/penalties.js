@@ -13,6 +13,18 @@ export default {
         )
         .addSubcommand(subcommand =>
             subcommand
+                .setName('remove')
+                .setDescription('Anuluje (usuwa) ustanowioną karę. Nie wpłynie to na nałożone już kary.')
+                .addIntegerOption(option =>
+                    option
+                        .setName('id')
+                        .setDescription('ID ustanowionej kary do usunięcia')
+                        .setRequired(true)
+                        .setMinValue(0)
+                )
+        )
+        .addSubcommand(subcommand =>
+            subcommand
                 .setName('kick')
                 .setDescription('Ustanawia karę wyrzucenia na danym progu ostrzeżeń.')
                 .addIntegerOption(option =>
@@ -98,7 +110,7 @@ export default {
                     const penalty = penaltiesList[i];
                     penaltiesText += `**ID: ${penalty.id}** Próg ostrzeżeń: \`\`${penalty.at_warns}\`\`\nKara: \`\`${penalty.penalty}\`\`\n\n`;
                 }
-                if (penaltiesText == '') penaltiesText = 'Brak ustanowionych kar';
+                if (penaltiesText == '') penaltiesText = 'Brak aktywnych ustanowionych kar';
                 else penaltiesText = penaltiesText.substring(0, penaltiesText.length - 2);
 
                 const embed = new EmbedBuilder()
@@ -133,6 +145,13 @@ export default {
                 await penalties.addTimeoutPenalty(atWarns, duration);
                 await interaction.reply(`Pomyślnie ustanowiono karę timeoutu po osiągnięciu progu liczby ostrzeżeń: \`\`${atWarns}\`\``);
                 break;
+            }
+
+            case 'remove': {
+                const id = interaction.options.getInteger('id');
+                await penalties.removePenalty(id);
+
+                await interaction.reply(`Pomyślnie anulowano ustanowioną karę o ID \`\`${id}\`\` jeżeli taka istniała.`)
             }
         }
 
