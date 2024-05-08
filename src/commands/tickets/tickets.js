@@ -33,7 +33,7 @@ export default {
                             .setDescription(process.env.ticket_notice_text ? process.env.ticket_notice_text : 'Kliknij poniższy przycisk aby otworzyć nowego ticketa.')
                             .setFooter({ text: 'Designed by Maciejka' });
 
-                        let obj = JSON.parse(fs.readFileSync(path.join(__dirname, '../../ticket-categories.json'), 'utf8'));
+                        let obj = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../ticket-categories.json'), 'utf8'));
 
                         let options = [];
 
