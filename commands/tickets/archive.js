@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import mysql from 'mysql';
 import util from 'node:util';
 
-const mysqlData = {
+const mysqlConfig = {
     host: process.env.mysql_host,
     port: process.env.mysql_port ? parseInt(process.env.mysql_port) : 3306,
     user: process.env.mysql_user,
@@ -40,7 +40,7 @@ export default {
 
             await interaction.deferReply();
             
-            const conn = mysql.createConnection(mysqlData);
+            const conn = mysql.createConnection(mysqlConfig);
             conn.query = util.promisify(conn.query);
 
             const rows = await conn.query(`SELECT ticket_id, archive_date, ticket_data FROM ticket_archive WHERE author_id = ${conn.escape(targetId)} ORDER BY archive_date DESC LIMIT 10;`);

@@ -24,16 +24,17 @@ const redis = createClient();
 redis.on('error', err => console.log('Redis Client Error', err));
 await redis.connect();
 
-const mysqlData = {
+const mysqlConfig = {
     host: process.env.mysql_host,
     port: process.env.mysql_port ? parseInt(process.env.mysql_port) : 3306,
     user: process.env.mysql_user,
     password: process.env.mysql_pass,
-    database: process.env.mysql_db
+    database: process.env.mysql_db,
+    multipleStatements: true
 };
 
-const conn = mysql.createConnection(mysqlData);
-conn.query("CREATE TABLE IF NOT EXISTS ticket_archive (ticket_id VARCHAR(32) PRIMARY KEY, author_id VARCHAR(32) NOT NULL, archive_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), ticket_data JSON NOT NULL);", () => {
+const conn = mysql.createConnection(mysqlConfig);
+conn.query("CREATE TABLE IF NOT EXISTS ticket_archive (ticket_id VARCHAR(32) PRIMARY KEY, author_id VARCHAR(32) NOT NULL, archive_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), ticket_data JSON NOT NULL);CREATE TABLE user_profiles(user_id VARCHAR(32) PRIMARY KEY, profile_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP());CREATE TABLE warns();", () => {
     conn.end();
 });
 

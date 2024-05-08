@@ -27,7 +27,7 @@ export default {
             await interaction.channel.bulkDelete(messagesToDelete);
         } catch (e) {
             if (e.rawError.code === 50034) {
-                await interaction.followUp({ content: `Komendy \`\`purge\`\` można używać tylko na wiadomościach nie starszych niż 14 dni!`, ephemeral: true });
+                await interaction.followUp(`Komendy \`\`purge\`\` można używać tylko na wiadomościach nie starszych niż 14 dni!`);
                 return;
             }
         }
