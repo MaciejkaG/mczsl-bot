@@ -1,7 +1,5 @@
 import 'dotenv/config';
 import { SlashCommandBuilder, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, PermissionFlagsBits } from 'discord.js';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import mysql from 'mysql';
 import util from 'node:util';
 
@@ -12,9 +10,6 @@ const mysqlConfig = {
     password: process.env.mysql_pass,
     database: process.env.mysql_db
 };
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export default {
     data: new SlashCommandBuilder()
@@ -68,7 +63,7 @@ export default {
                     [row.author_id, row.ticket_id] = [targetId, targetTicketId];
 
                     await confirmation.update({ components: [], ...generateResultEmbed(row) });
-                } catch (e) {
+                } catch {
                     await interaction.editReply({ content: 'Nie wybrano wyniku. Anulowanie wyszukiwania.', components: [], embeds: [] });
                 }
             }

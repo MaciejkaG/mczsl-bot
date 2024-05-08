@@ -1,10 +1,10 @@
 import { Events } from 'discord.js';
-import colors from 'colors';
+import chalk from 'chalk';
 
 export default {
     name: Events.ClientReady,
     once: true,
     execute: (client) => {
-        console.log(`${'[BOT]'.blue} Logged in as ${client.user.tag}`);
+        console.log(`${chalk.blue('[BOT]')} Logged in as ${client.user.tag}`);
     }
 };

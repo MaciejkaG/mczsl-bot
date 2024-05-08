@@ -44,7 +44,7 @@ export default {
                 
                 break;
 
-            case 'closeTicket':
+            case 'closeTicket': {
                 // Removing @everyone view permissions (so only administrators can view the ticket channel) and removing the ticket from Redis
                 await interaction.client.redis.del(`ticket:${interaction.channel.id}`);
                 await interaction.channel.permissionOverwrites.create(interaction.guild.roles.everyone, { deny: PermissionsBitField.Flags.ViewChannel });
@@ -55,7 +55,7 @@ export default {
 
                 // Archiving the ticket
                 const conn = mysql.createConnection(mysqlData);
-                conn.query(`INSERT INTO ticket_archive(ticket_id, author_id, ticket_data) VALUES (${conn.escape(interaction.channel.id)}, ${conn.escape(ticketData.authorId)}, ${conn.escape(JSON.stringify(ticketData))})`, (err) => {
+                conn.query(`INSERT INTO ticket_archive(ticket_id, author_id, ticket_data) VALUES (${conn.escape(interaction.channel.id)}, ${conn.escape(ticketData.authorId)}, ${conn.escape(JSON.stringify(ticketData))})`, () => {
                     conn.end();
                 });
 
@@ -73,6 +73,7 @@ export default {
                     interaction.user.send(`Ticket (ID: \`\`${interaction.channel.id}\`\`) utworzony przez Ciebie na serwerze \`\`${interaction.guild.name}\`\` został usunięty przez administratora.`);
                 }
                 break;
+            }
         }
     },
 };

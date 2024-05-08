@@ -1,10 +1,10 @@
 import 'dotenv/config';
 import { fileURLToPath } from 'node:url';
-import fs from 'node:fs';
-import path from 'node:path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { REST, Routes, Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 import { createClient } from 'redis';
-import colors from 'colors';
+import chalk from 'chalk';
 import mysql from 'mysql';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -42,7 +42,7 @@ client.redis = redis;
 client.commands = new Collection();
 
 (async () => {
-    console.log(`${'[COMMANDS]'.magenta} Loading command handlers...`);
+    console.log(`${chalk.magenta('[COMMANDS]')} Loading command handlers...`);
     for (const folder of commandFolders) {
         const commandsPath = path.join(foldersPath, folder);
         const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -53,28 +53,28 @@ client.commands = new Collection();
                 commands.push(command.data.toJSON());
                 client.commands.set(command.data.name, command);
             } else {
-                console.log(`${'[COMMANDS]'.magenta} ${'[WARNING]'.yellow} The command at ${filePath} is missing required property(-ies).`);
+                console.log(`${chalk.magenta('[COMMANDS]')} ${chalk.yellow('[WARNING]')} The command at ${filePath} is missing required property(-ies).`);
             }
         }
     }
-    console.log(`${'[COMMANDS]'.magenta} All command handlers loaded...`);
+    console.log(`${chalk.magenta('[COMMANDS]')} All command handlers loaded...`);
 
     const rest = new REST().setToken(token);
 
     try {
-        console.log(`${'[COMMANDS]'.magenta} Reloading ${commands.length} application (/) commands...`);
+        console.log(`${chalk.magenta('[COMMANDS]')} Reloading ${commands.length} application (/) commands...`);
 
         const data = await rest.put(
             Routes.applicationCommands(clientId),
             { body: commands },
         );
 
-        console.log(`${'[COMMANDS]'.magenta} Successfully eloaded ${data.length} application (/) commands.`);
+        console.log(`${chalk.magenta('[COMMANDS]')} Successfully reloaded ${data.length} application (/) commands.`);
     } catch (error) {
         console.error(error);
     }
 
-    console.log(`${'[EVENTS]'.cyan} Loading event handlers...`);
+    console.log(`${chalk.cyan('[EVENTS]')} Loading event handlers...`);
     for (const file of eventFiles) {
         const filePath = path.join(eventsPath, file);
         const event = (await import('file://' + filePath)).default;
@@ -85,10 +85,10 @@ client.commands = new Collection();
                 client.on(event.name, (...args) => event.execute(...args));
             }
         } else {
-            console.log(`${'[EVENTS]'.cyan} ${'[WARNING]'.yellow} The command at ${filePath} is missing required property(-ies).`);
+            console.log(`${chalk.cyan('[EVENTS]')} ${chalk.yellow('[WARNING]')} The command at ${filePath} is missing required property(-ies).`);
         }
     }
-    console.log(`${'[EVENTS]'.cyan} All event handlers loaded...`);
+    console.log(`${chalk.cyan('[EVENTS]')} All event handlers loaded...`);
 })();
 
 client.on(Events.InteractionCreate, async interaction => {
@@ -97,7 +97,7 @@ client.on(Events.InteractionCreate, async interaction => {
     const command = interaction.client.commands.get(interaction.commandName);
 
     if (!command) {
-        console.log(`${'[COMMANDS]'.magenta} ${'[WARNING]'.yellow} No command matching ${interaction.commandName} was found.`);
+        console.log(`${chalk.magenta('[COMMANDS]')} ${chalk.yellow('[WARNING]')} No command matching ${interaction.commandName} was found.`);
         return;
     }
 
