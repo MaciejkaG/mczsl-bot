@@ -9,7 +9,7 @@
     "start": "nodemon"
   },
   "imports": {
-    "@utils/*": "./utils/*"
+    "#utils/*": "./src/utils/*"
   },
   "repository": {
     "type": "git",

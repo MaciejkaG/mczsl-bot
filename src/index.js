@@ -33,10 +33,11 @@ const mysqlConfig = {
     multipleStatements: true
 };
 
-const conn = mysql.createConnection(mysqlConfig);
-conn.query("CREATE TABLE IF NOT EXISTS ticket_archive (ticket_id VARCHAR(32) PRIMARY KEY, author_id VARCHAR(32) NOT NULL, archive_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), ticket_data JSON NOT NULL);CREATE TABLE user_profiles(user_id VARCHAR(32) PRIMARY KEY, profile_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP());CREATE TABLE warns();", () => {
-    conn.end();
-});
+// This does not work as intended (yet)
+// const conn = mysql.createConnection(mysqlConfig);
+// conn.query("CREATE TABLE IF NOT EXISTS ticket_archive (ticket_id VARCHAR(32) PRIMARY KEY, author_id VARCHAR(32) NOT NULL, archive_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), ticket_data JSON NOT NULL);CREATE TABLE user_profiles(user_id VARCHAR(32) PRIMARY KEY, profile_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP());CREATE TABLE `warns` (`id` uuid NOT NULL DEFAULT uuid() PRIMARY KEY, `user_id` varchar(32) NOT NULL, `by_user_id` varchar(32) NOT NULL, `reason` varchar(256) DEFAULT NULL, `date` timestamp NOT NULL DEFAULT current_timestamp());", () => {
+//     conn.end();
+// });
 
 client.redis = redis;
 client.commands = new Collection();

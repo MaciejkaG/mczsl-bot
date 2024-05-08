@@ -38,7 +38,7 @@ export default {
             const conn = mysql.createConnection(mysqlConfig);
             conn.query = util.promisify(conn.query);
 
-            const rows = await conn.query(`SELECT ticket_id, archive_date, ticket_data FROM ticket_archive WHERE author_id = ${conn.escape(targetId)} ORDER BY archive_date DESC LIMIT 10;`);
+            const rows = await conn.query(`SELECT ticket_id, archive_date, ticket_data FROM ticket_archive WHERE author_id = ${conn.escape(targetId)} ORDER BY archive_date DESC LIMIT 25;`);
 
             if (!rows.length) {
                 await interaction.editReply(`Nie znaleziono wyników.`);
@@ -96,7 +96,7 @@ function generateChoiceEmbed(rows) {
     const embed = new EmbedBuilder()
         .setColor(0x4400FF)
         .setTitle('Wyszukiwanie archiwum - Wiele wyników')
-        .setDescription('Znaleziono wiele pasujących wyników. Wybierz jeden z nich.\nUwaga: Bezpośrednio poprzez bota wyświetlają się tylko 10 ostatnich wyników chronologicznie.')
+        .setDescription('Znaleziono wiele pasujących wyników. Wybierz jeden z nich.\nUwaga: Bezpośrednio poprzez bota wyświetlają się tylko 25 ostatnich wyników chronologicznie.')
         .setFooter({ text: 'Designed by Maciejka' });
 
 
