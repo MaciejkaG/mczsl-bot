@@ -11,6 +11,7 @@ export default {
     name: Events.InteractionCreate,
     async execute(interaction) {
         if (!interaction.isStringSelectMenu() || interaction.customId != 'ticketcategory' || !interaction.values) return;
+        await interaction.deferReply({ ephemeral: true });
         const val = interaction.values[0];
 
         const category = interaction.member.guild.channels.cache.get(process.env.ticket_category_id);
@@ -18,15 +19,26 @@ export default {
         const obj = JSON.parse(fs.readFileSync(path.join(__dirname, '../../ticket-categories.json'), 'utf8')); // Unfortunately there's no simple way to to this in a less ugly manner.
         const ticketCategory = obj.find(category => category.value == val);
 
-        if (category && category.type === 4 && ticketCategory) {
-            await interaction.deferReply({ ephemeral: true });
+        // Check whether the user hasn't created a ticket already...
+        let channels = category.children.cache;
+        // ...by iterating all channels in the tickets' category...
+        for (let channel of channels) {
+            // ...and checking the name of each one of them.
+            channel = channel[1];
+            if (channel.name.endsWith('-' + interaction.user.id)) {
+                await interaction.followUp(`Możesz mieć maksymalnie jeden otwarty ticket! Kanał Twojego aktualnie otwartego ticketu: <#${channel.id}>`);
+                return;
+            }
+        }
 
+        if (category && category.type === 4 && ticketCategory) {
             const channel = await interaction.member.guild.channels.create({ 
                 name: `${val}-${interaction.user.id}`,
                 type: ChannelType.GuildText,
                 reason: 'Utworzenie ticketa'
             });
             await channel.setParent(category.id);
+            // We need to set the channel's permissions AFTER creating it, because moving it to a category could inherit the category's permissions
             await channel.edit({
                 permissionOverwrites: [
                     {
@@ -38,7 +50,7 @@ export default {
                         allow: [PermissionFlagsBits.ViewChannel]
                     }
                 ]
-            })
+            });
 
             const embed = new EmbedBuilder()
                 .setColor(0x4400FF)
@@ -79,7 +91,8 @@ export default {
 
                 notificationChannel.send({ embeds: [notificationEmbed] });
             }
-            
+        } else {
+            await interaction.reply("Wystąpił błąd związany z konfiguracją bota. Zgłoś to administracji serwera.");
         }
     },
 };
