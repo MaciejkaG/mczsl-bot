@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { Events, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ChannelType } from 'discord.js';
+import { Events, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ChannelType, PermissionFlagsBits } from 'discord.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -21,8 +21,24 @@ export default {
         if (category && category.type === 4 && ticketCategory) {
             await interaction.deferReply({ ephemeral: true });
 
-            const channel = await interaction.member.guild.channels.create({ name: `${val}-${interaction.user.id}`, type: ChannelType.GuildText });
+            const channel = await interaction.member.guild.channels.create({ 
+                name: `${val}-${interaction.user.id}`,
+                type: ChannelType.GuildText,
+                reason: 'Utworzenie ticketa'
+            });
             await channel.setParent(category.id);
+            await channel.edit({
+                permissionOverwrites: [
+                    {
+                        id: interaction.guild.id,
+                        deny: [PermissionFlagsBits.ViewChannel]
+                    },
+                    {
+                        id: interaction.user.id,
+                        allow: [PermissionFlagsBits.ViewChannel]
+                    }
+                ]
+            })
 
             const embed = new EmbedBuilder()
                 .setColor(0x4400FF)
