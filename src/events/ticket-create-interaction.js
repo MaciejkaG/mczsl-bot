@@ -15,7 +15,7 @@ export default {
 
         const category = interaction.member.guild.channels.cache.get(process.env.ticket_category_id);
 
-        const obj = JSON.parse(fs.readFileSync(path.join(__dirname, '../ticket-categories.json'), 'utf8'));
+        const obj = JSON.parse(fs.readFileSync(path.join(__dirname, '../../ticket-categories.json'), 'utf8')); // Unfortunately there's no simple way to to this in a less ugly manner.
         const ticketCategory = obj.find(category => category.value == val);
 
         if (category && category.type === 4 && ticketCategory) {
