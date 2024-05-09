@@ -1,6 +1,6 @@
 {
   "name": "mczsl-tickets",
-  "version": "0.7.7",
+  "version": "0.8.0",
   "description": "Bot do obsługi ticketów na serwerze Discord mc.zsł.pl",
   "main": "src/index.js",
   "type": "module",
