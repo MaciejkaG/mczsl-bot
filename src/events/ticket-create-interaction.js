@@ -19,6 +19,8 @@ export default {
         const ticketCategory = obj.find(category => category.value == val);
 
         if (category && category.type === 4 && ticketCategory) {
+            await interaction.deferReply({ ephemeral: true });
+
             const channel = await interaction.member.guild.channels.create({ name: `${val}-${interaction.user.id}`, type: ChannelType.GuildText });
             await channel.setParent(category.id);
 
@@ -48,7 +50,7 @@ export default {
 
             await interaction.client.redis.json.set(`ticket:${channel.id}`, '$', { authorId: interaction.member.id, openTimestamp: Math.floor(new Date().getTime() / 1000), transcript: [] });
 
-            await interaction.reply({ content: `Oto nowy kanał specjalnie dla Twojego ticketu: <#${channel.id}>`, ephemeral: true });
+            await interaction.followUp({ content: `Oto nowy kanał specjalnie dla Twojego ticketu: <#${channel.id}>`, ephemeral: true });
 
             if (process.env.ticket_notification_channel_id) {
                 const notificationChannel = await interaction.guild.channels.fetch(process.env.ticket_notification_channel_id);
