@@ -6,6 +6,7 @@ import { REST, Routes, Client, Collection, Events, GatewayIntentBits } from 'dis
 import { createClient } from 'redis';
 import chalk from 'chalk';
 import mysql from 'mysql';
+import tags from './utils/tags.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,9 +22,9 @@ const token = process.env.bot_token;
 const clientId = process.env.bot_client_id;
 
 const redis = createClient();
-redis.on('error', err => console.log(`${chalk.redBright('[REDIS]')} Client ${chalk.red('error')} occured:`, err));
+redis.on('error', err => console.log(`${tags.redis} Client ${chalk.red('error')} occured:`, err));
 await redis.connect();
-console.log(`${chalk.red('[REDIS]')} Connected.`)
+console.log(`${tags.redis} Connected.`)
 
 const mysqlConfig = {
     host: process.env.mysql_host,
@@ -37,8 +38,8 @@ const mysqlConfig = {
 // This does not work as intended (yet)
 const conn = mysql.createConnection(mysqlConfig);
 conn.query("SELECT version();", (err) => {
-    if (err) console.log(`${chalk.blue('[MYSQL]')} Client ${chalk.red('error')} occured:\n${err}`);
-    else console.log(`${chalk.blue('[MYSQL]')} Connected.`)
+    if (err) console.log(`${tags.mysql} Client ${chalk.red('error')} occured:\n${err}`);
+    else console.log(`${tags.mysql} Connected.`)
 });
 // conn.query("CREATE TABLE IF NOT EXISTS ticket_archive (ticket_id VARCHAR(32) PRIMARY KEY, author_id VARCHAR(32) NOT NULL, archive_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), ticket_data JSON NOT NULL);CREATE TABLE user_profiles(user_id VARCHAR(32) PRIMARY KEY, profile_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP());CREATE TABLE `warns` (`id` uuid NOT NULL DEFAULT uuid() PRIMARY KEY, `user_id` varchar(32) NOT NULL, `by_user_id` varchar(32) NOT NULL, `reason` varchar(256) DEFAULT NULL, `date` timestamp NOT NULL DEFAULT current_timestamp());", () => {
 //     conn.end();
@@ -48,7 +49,7 @@ client.redis = redis;
 client.commands = new Collection();
 
 (async () => {
-    console.log(`${chalk.magenta('[COMMANDS]')} Loading command handlers...`);
+    console.log(`${tags.commands} Loading command handlers...`);
     for (const folder of commandFolders) {
         const commandsPath = path.join(foldersPath, folder);
         const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -59,28 +60,28 @@ client.commands = new Collection();
                 commands.push(command.data.toJSON());
                 client.commands.set(command.data.name, command);
             } else {
-                console.log(`${chalk.magenta('[COMMANDS]')} ${chalk.yellow('[WARNING]')} The command at ${filePath} is missing required property(-ies).`);
+                console.log(`${tags.commands} ${chalk.yellow('[WARNING]')} The command at ${filePath} is missing required property(-ies).`);
             }
         }
     }
-    console.log(`${chalk.magenta('[COMMANDS]')} All command handlers loaded...`);
+    console.log(`${tags.commands} All command handlers loaded...`);
 
     const rest = new REST().setToken(token);
 
     try {
-        console.log(`${chalk.magenta('[COMMANDS]')} Reloading ${commands.length} application (/) commands...`);
+        console.log(`${tags.commands} Reloading ${commands.length} application (/) commands...`);
 
         const data = await rest.put(
             Routes.applicationCommands(clientId),
             { body: commands },
         );
 
-        console.log(`${chalk.magenta('[COMMANDS]')} Successfully reloaded ${data.length} application (/) commands.`);
+        console.log(`${tags.commands} Successfully reloaded ${data.length} application (/) commands.`);
     } catch (error) {
         console.error(error);
     }
 
-    console.log(`${chalk.cyan('[EVENTS]')} Loading event handlers...`);
+    console.log(`${tags.events} Loading event handlers...`);
     for (const file of eventFiles) {
         const filePath = path.join(eventsPath, file);
         const event = (await import('file://' + filePath)).default;
@@ -91,10 +92,10 @@ client.commands = new Collection();
                 client.on(event.name, (...args) => event.execute(...args));
             }
         } else {
-            console.log(`${chalk.cyan('[EVENTS]')} ${chalk.yellow('[WARNING]')} The command at ${filePath} is missing required property(-ies).`);
+            console.log(`${tags.events} ${chalk.yellow('[WARNING]')} The command at ${filePath} is missing required property(-ies).`);
         }
     }
-    console.log(`${chalk.cyan('[EVENTS]')} All event handlers loaded...`);
+    console.log(`${tags.events} All event handlers loaded...`);
 })();
 
 client.on(Events.InteractionCreate, async interaction => {
@@ -103,7 +104,7 @@ client.on(Events.InteractionCreate, async interaction => {
     const command = interaction.client.commands.get(interaction.commandName);
 
     if (!command) {
-        console.log(`${chalk.magenta('[COMMANDS]')} ${chalk.yellow('[WARNING]')} No command matching ${interaction.commandName} was found.`);
+        console.log(`${tags.commands} ${chalk.yellow('[WARNING]')} No command matching ${interaction.commandName} was found.`);
         return;
     }
 
