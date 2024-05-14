@@ -21,8 +21,9 @@ const token = process.env.bot_token;
 const clientId = process.env.bot_client_id;
 
 const redis = createClient();
-redis.on('error', err => console.log('Redis Client Error', err));
+redis.on('error', err => console.log(`${chalk.redBright('[REDIS]')} Client ${chalk.red('error')} occured:`, err));
 await redis.connect();
+console.log(`${chalk.red('[REDIS]')} Connected.`)
 
 const mysqlConfig = {
     host: process.env.mysql_host,
@@ -34,7 +35,11 @@ const mysqlConfig = {
 };
 
 // This does not work as intended (yet)
-// const conn = mysql.createConnection(mysqlConfig);
+const conn = mysql.createConnection(mysqlConfig);
+conn.query("SELECT version();", (err) => {
+    if (err) console.log(`${chalk.blue('[MYSQL]')} Client ${chalk.red('error')} occured:\n${err}`);
+    else console.log(`${chalk.blue('[MYSQL]')} Connected.`)
+});
 // conn.query("CREATE TABLE IF NOT EXISTS ticket_archive (ticket_id VARCHAR(32) PRIMARY KEY, author_id VARCHAR(32) NOT NULL, archive_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), ticket_data JSON NOT NULL);CREATE TABLE user_profiles(user_id VARCHAR(32) PRIMARY KEY, profile_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP());CREATE TABLE `warns` (`id` uuid NOT NULL DEFAULT uuid() PRIMARY KEY, `user_id` varchar(32) NOT NULL, `by_user_id` varchar(32) NOT NULL, `reason` varchar(256) DEFAULT NULL, `date` timestamp NOT NULL DEFAULT current_timestamp());", () => {
 //     conn.end();
 // });
